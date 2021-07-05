@@ -1,13 +1,8 @@
-package Argonden.di.entity;
-
-import org.springframework.beans.factory.annotation.Value;
-
+package Argonden.aop.entity;
 
 public class NewlecExam implements Exam {
 
-	@Value("20")
 	private int kor;
-	@Value("30")
 	private int eng;
 	private int math;
 	private int com;
@@ -29,13 +24,36 @@ public class NewlecExam implements Exam {
 	@Override
 	public int total() {
 		// TODO Auto-generated method stub
-		return kor + eng + math + com;
+		
+//		long start = System.currentTimeMillis();
+		
+		int nresult = kor + eng + math + com;
+		
+		if (kor > 100)
+			throw new IllegalArgumentException("유효하지 않은 국어 점수\n");
+		
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+//		long end = System.currentTimeMillis();
+		
+//		String message = "calculated time is " + (end - start) + " ms";
+//		System.out.println(message);
+		
+		return nresult;
 	}
 
 	@Override
 	public float avg() {
 		// TODO Auto-generated method stub
-		return total() / 4.0f;
+		
+		float fresult = total() / 4.0f;
+		
+		return fresult;
 	}
 
 
