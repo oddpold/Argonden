@@ -78,6 +78,7 @@ public class Program {
 		 * 익명클래스로 proxy를 구현 했던 것을 LogAroundAdvice 클래스와 xml로 정의한다
 		 * 그러면 소스 수정 없이 xml에서 객체의 이름과 설정만 바꿈으로 다른 기능을 추가 할 수 있다
 		 * PointCut 기능을 이용해서 특정 함수만 기능을 수행 하도록 할 수도 있다 (xml 참조)
+		 * classicadvisor를 이용하는 방법. 기능은 좋은데 복잡하다
 		 */
 		context = new ClassPathXmlApplicationContext("Argonden/aop/setting.xml");
 //		context = new AnnotationConfigApplicationContext(DIConfig.class);
