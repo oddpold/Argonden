@@ -14,7 +14,7 @@ public class LogAroundAdvice implements MethodInterceptor {
 		
 		long end = System.currentTimeMillis();
 		
-		String message = "calculated time is " + (end - start) + " ms";
+		String message = "AroundAdvice : calculated time is " + (end - start) + " ms";
 		System.out.println(message);
 		
 		return result;

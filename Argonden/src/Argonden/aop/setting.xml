@@ -9,7 +9,8 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
 
-<!-- 	<context:annotation-config />
+<!--
+ 	<context:annotation-config />
 	<context:component-scan base-package="Argonden.di.ui, Argonden.di.entity" />
  -->
 
@@ -17,10 +18,15 @@
 	<!-- <bean id="exam" class="Argonden.aop.entity.NewlecExam" p:kor="1" p:eng="2" p:math="4" p:com="3" /> -->
 	
 <!-- 2. 사이드업무를 끼워넣은 함수 포인터 객체를 정의 한다
-        <bean id="exam"...이 같기 때문에 소스 수정 없이 아래의 기능을 할 수 있다
+        <bean id="exam"...이, 즉 클래스 이름이 같기 때문에 소스 수정 없이 아래의 기능을 할 수 있다
+        2-1.advise 패키지의 객체를 각각 정의 해서 사용한다. invocationhandler와 같은 사이드업물를 할 객체 클리스를
+        각각의 bean 태그로 정의해서 proxy 객체에 연결을 한다
+        2-2. 함수테이블과 같은 것이기 떄문에, 객체에 포함된 모든 함수에 대해서 동일하게 수행된다
+        pointcutadvisor를 통해서 함수를 지정하면 해당 함수만 사이드업무, 즉 AOP가 적용된다 
  -->
 
-	<bean id="target" class="Argonden.aop.entity.NewlecExam" p:kor="12" p:eng="2" p:math="4" p:com="3" />
+<!--
+ 	<bean id="target" class="Argonden.aop.entity.NewlecExam" p:kor="12" p:eng="2" p:math="4" p:com="3" />
 	<bean id="logAroundAdvice" class="Argonden.aop.advice.LogAroundAdvice"></bean>
 	<bean id="logBeforeAdvice" class="Argonden.aop.advice.LogBeforeAdvice"></bean>
 	<bean id="logAfterReturningAdvice" class="Argonden.aop.advice.LogAfterReturningAdvice"></bean>
@@ -42,8 +48,46 @@
 		<property name="target" ref="target" />
 		<property name="interceptorNames">
 			<list>
-				<!-- <value>logAroundAdvice</value> --><value>classicAroundAdviser</value>
-				<!-- <value>logBeforeAdvice</value> --><value>classicBeforeAdviser</value>
+				<value>classicAroundAdviser</value>
+				<value>classicBeforeAdviser</value>
+				<value>logAfterReturningAdvice</value>
+				<value>logAfterThrowingAdvice</value>
+			</list>
+		</property>
+	</bean>
+ -->
+<!-- 3. pointcutadviso가 좋기는 하나 코드가 너무 복잡해진다. 단순하게 줄여보자
+     NameMatchMethodPointcutAdvisor를 사용하면 선언하고 셋팅하는 단계를 하나로 통합 할 수 있다
+     함수 한개뿐만아니라 list로 함수 목록을 지정 할 수 있다
+     tip : RegexpMatchMethodPointcutAdvisor를 사용하면 정규식도 사용 가능하다
+-->
+
+	<bean id="target" class="Argonden.aop.entity.NewlecExam" p:kor="12" p:eng="2" p:math="4" p:com="3" />
+	<bean id="logAroundAdvice" class="Argonden.aop.advice.LogAroundAdvice"></bean>
+	<bean id="logBeforeAdvice" class="Argonden.aop.advice.LogBeforeAdvice"></bean>
+	<bean id="logAfterReturningAdvice" class="Argonden.aop.advice.LogAfterReturningAdvice"></bean>
+	<bean id="logAfterThrowingAdvice" class="Argonden.aop.advice.LogAfterThrowingAdvice"></bean>
+	
+	<bean id="classicAroundAdviser" class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+		<property name="advice" ref="logAroundAdvice"></property>
+		<property name="mappedName" value="total"></property>
+	</bean>
+	<bean id="classicBeforeAdviser" class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+		<property name="advice" ref="logBeforeAdvice"></property>
+		<property name="mappedNames">
+			<list>
+				<value>total</value>
+				<value>avg</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="exam" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="target" />
+		<property name="interceptorNames">
+			<list>
+				<value>classicAroundAdviser</value>
+				<value>classicBeforeAdviser</value>
 				<value>logAfterReturningAdvice</value>
 				<value>logAfterThrowingAdvice</value>
 			</list>
