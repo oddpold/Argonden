@@ -89,6 +89,10 @@ public class Program {
 		System.out.printf("avg is %f\n", exam.avg());
 
 		
+		/*
+		 * 이클립스가...git 저장 정보에 가끔씩 오류가 난다. 당황하지 말고
+		 * preferences > general > security > secure storage > contents 에서 git을 삭제하고 다시 커밋하자
+		 */
 	}
 
 }
